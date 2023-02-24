@@ -48,8 +48,10 @@ test('geçersiz bir mail girildiğinde "email geçerli bir email adresi olmalıd
   render(<IletisimFormu />);
   const email = await screen.findByTestId("iletisimFormuInput3");
   userEvent.type(email, "dizdar");
-  const errors = screen.queryAllByTestId("error");
-  expect(errors).toHaveLength(1);
+  const errors = screen.getByText(
+    "Hata: email geçerli bir email adresi olmalıdır."
+  );
+  expect(errors).toBeInTheDocument();
 });
 
 test('soyad girilmeden gönderilirse "soyad gereklidir." mesajı render ediliyor', async () => {
@@ -78,4 +80,26 @@ test("ad,soyad, email render ediliyor. mesaj bölümü doldurulmadığında hata
   expect(errors).toHaveLength(0);
 });
 
-test("form gönderildiğinde girilen tüm değerler render ediliyor.", async () => {});
+test("form gönderildiğinde girilen tüm değerler render ediliyor.", async () => {
+  render(<IletisimFormu />);
+  const kullaniciAdi = await screen.findByTestId("iletisimFormuInput");
+  userEvent.type(kullaniciAdi, "Onure");
+  const kullaniciSoyadi = await screen.findByTestId("iletisimFormuInput2");
+  userEvent.type(kullaniciSoyadi, "dizdar");
+  const email = await screen.findByTestId("iletisimFormuInput3");
+  userEvent.type(email, "dizdar@gmail.com");
+  const mesaj = await screen.findByTestId("iletisimFormuInput4");
+  userEvent.type(mesaj, "mesaj yazıldı");
+  const gonderButton = await screen.findByTestId("iletisimFormuGonder");
+  userEvent.click(gonderButton);
+
+  const nameTextArea = await screen.findByDisplayValue("Onure");
+  const surNameTextArea = await screen.findByDisplayValue("dizdar");
+  const mailTextArea = await screen.findByDisplayValue("dizdar@gmail.com");
+  const mesajTextArea = await screen.findByDisplayValue("mesaj yazıldı");
+
+  expect(nameTextArea).toBeInTheDocument();
+  expect(surNameTextArea).toBeInTheDocument();
+  expect(mailTextArea).toBeInTheDocument();
+  expect(mesajTextArea).toBeInTheDocument();
+});

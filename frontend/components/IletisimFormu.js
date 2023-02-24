@@ -120,6 +120,7 @@ const IletisimFormu = () => {
             name="mesaj"
             id="mesaj"
             value={form.mesaj}
+            data-testid="iletisimFormuInput4"
           />
           {errors.mesaj && <p data-testid="error">Error: {errors.mesaj}</p>}
         </div>
